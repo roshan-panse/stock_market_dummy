@@ -1,0 +1,17 @@
+.details-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--space-5); align-items: start; }
+.stock-header { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; }
+.stock-header-price { display: flex; flex-direction: column; align-items: flex-end; }
+.tabs { display: flex; gap: var(--space-1); margin-bottom: var(--space-3); }
+.tab { background: rgba(255,255,255,.06); border: 1px solid transparent; color: var(--text-secondary); padding: 6px 16px; border-radius: 999px; cursor: pointer; transition: color var(--transition-fast), background var(--transition-fast); }
+.tab:hover { color: var(--text-primary); }
+.tab.active { background: var(--mauve-bg); color: var(--mauve); border-color: var(--mauve-dark); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.stats div { display: flex; flex-direction: column; background: var(--glass-gradient); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 14px; }
+.trade-panel { gap: 10px; }
+
+@media (max-width: 900px) {
+  .details-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .stats { grid-template-columns: 1fr; }
+}

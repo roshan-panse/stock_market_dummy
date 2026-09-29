@@ -1,0 +1,8 @@
+.hc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); }
+.hc-head h2 { margin: 0; }
+.hc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hc-card { display: flex; flex-direction: column; gap: 2px; text-align: left; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.07); border-radius: var(--radius-lg); padding: 12px; cursor: pointer; transition: border-color var(--transition-fast), background var(--transition-fast); }
+.hc-card:hover { border-color: var(--mauve); background: rgba(217,167,211,.06); }
+.hc-value { font-size: var(--text-md); }
+.hc-foot { margin: 10px 0 8px; }
+.hc-meta { display: flex; justify-content: space-between; gap: 4px; font-size: 11px; white-space: nowrap; }

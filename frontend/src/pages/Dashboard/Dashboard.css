@@ -1,0 +1,45 @@
+/* Dashboard layout. Palette tokens (--mauve, --plum…) now live in index.css */
+.dash {
+  display: flex; flex-direction: column; gap: var(--space-5);
+  position: relative;
+}
+.dash-title { font-size: var(--text-xl); }
+.dash-title span { color: var(--mauve); }
+
+.dash-card {
+  display: flex; flex-direction: column; gap: var(--space-1);
+  padding: var(--space-5);
+  background: linear-gradient(150deg, rgba(74, 48, 71, .35), rgba(15, 19, 26, .92) 55%);
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+.dash-card h2 { font-size: var(--text-md); margin-bottom: var(--space-2); }
+.dash-big { font-size: var(--text-2xl); font-weight: 600; margin: var(--space-2) 0; }
+.dash-glow { text-align: center; align-items: center; justify-content: center; gap: var(--space-3); flex: 1;
+  background: radial-gradient(90% 70% at 50% 110%, rgba(217, 167, 211, .45), transparent 70%), linear-gradient(150deg, rgba(74, 48, 71, .35), rgba(15, 19, 26, .92) 55%); }
+.dash-glow h2 { margin: 0; }
+
+.dash-top { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: var(--space-4); align-items: stretch; }
+.dash-left { display: flex; flex-direction: column; gap: var(--space-4); }
+.dash-bottom { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-4); align-items: start; }
+
+/* Pill buttons (shared by Watchlist, Holdings, Chart) */
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { background: rgba(255, 255, 255, .06); border: 1px solid transparent; color: var(--text-secondary); border-radius: 999px; padding: 5px 14px; font-size: var(--text-sm); cursor: pointer; transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast); }
+.pill:hover { color: var(--text-primary); }
+.pill.active { background: var(--mauve-bg); color: var(--mauve); }
+.pill.outline { background: transparent; border-color: var(--border-light); }
+.pill.outline.active { border-color: var(--mauve); }
+.pill.filled { background: var(--mauve); color: #2a1428; font-weight: 500; padding: 8px 20px; }
+.pill.filled:hover { background: #e6bce1; color: #2a1428; }
+
+@media (max-width: 1000px) {
+  .dash-top { grid-template-columns: 1fr 1fr; }
+  .dash-left { grid-column: 1 / -1; flex-direction: row; }
+  .dash-left > * { flex: 1; }
+}
+@media (max-width: 700px) {
+  .dash-top, .dash-bottom { grid-template-columns: 1fr; }
+  .dash-left { flex-direction: column; }
+}

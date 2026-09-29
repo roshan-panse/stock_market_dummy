@@ -1,0 +1,5 @@
+.alloc { display: flex; align-items: center; gap: var(--space-5); flex-wrap: wrap; }
+.alloc-chart { width: 180px; height: 180px; }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); flex: 1; min-width: 140px; }
+.legend li { display: flex; align-items: center; gap: var(--space-2); } .legend .num { margin-left: auto; }
+.dot { width: 10px; height: 10px; border-radius: 50%; }

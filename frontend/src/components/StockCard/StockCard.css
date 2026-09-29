@@ -1,0 +1,4 @@
+.stock-card { display: flex; flex-direction: column; gap: 2px; text-align: left; background: var(--glass-gradient); border: 1px solid var(--glass-border); border-radius: var(--radius-xl); padding: var(--space-4); cursor: pointer; transition: border-color var(--transition-fast), background var(--transition-fast); }
+.stock-card:hover { border-color: var(--mauve); background: linear-gradient(150deg, rgba(217,167,211,.12), rgba(15,19,26,.92) 60%); }
+.stock-card-symbol { font-family: var(--font-display); font-weight: 700; }
+.stock-card-price { font-size: 1.3rem; margin-top: 10px; }
