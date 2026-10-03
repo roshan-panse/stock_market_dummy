@@ -4,7 +4,9 @@ secret_keys.txt
 # Ignore an entire folder (like node_modules or build outputs)
 node_modules/
 dist/
+.vscode/
 
 # Ignore all files with a specific extension
 *.log
 *.env
+
