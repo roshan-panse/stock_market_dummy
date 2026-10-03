@@ -1,14 +1,43 @@
-import { mock, mockError } from "./api.js";
-import { stocks, makePriceHistory } from "../utils/mockData.js";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const stockApi = {
-  getStocks: () => mock(stocks),
-  getStock: (symbol) => {
-    const s = stocks.find((x) => x.symbol === symbol);
-    return s ? mock(s) : mockError("Stock not found");
+  getStocks: async () => {
+    const response = await fetch(`${API_URL}/stocks/`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch stocks");
+    }
+
+    return response.json();
   },
-  getPriceHistory: (symbol, range) => {
-    const s = stocks.find((x) => x.symbol === symbol);
-    return s ? mock(makePriceHistory(s, range), 250) : mockError("Stock not found");
+
+  getStock: async (symbol) => {
+    const response = await fetch(`${API_URL}/stocks/`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch stocks");
+    }
+
+    const stocks = await response.json();
+
+    const stock = stocks.find((s) => s.symbol === symbol);
+
+    if (!stock) {
+      throw new Error("Stock not found");
+    }
+
+    return stock;
   },
+
+  getPriceHistory: async (symbol, range) => {
+  const response = await fetch(
+    `${API_URL}/stocks/${symbol}/price-history/?range=${range}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch price history");
+  }
+
+  return response.json();
+},
 };

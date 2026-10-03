@@ -1,10 +1,39 @@
-// Later: replace `mock()` with real fetch calls to Django, e.g.
-//   fetch(`${import.meta.env.VITE_API_URL}/stocks/`)
-// Every other service file goes through here, so only this file needs to change.
-export const BASE_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const mock = (data, delay = 400) =>
-  new Promise((resolve) => setTimeout(() => resolve(structuredClone(data)), delay));
+export const apiFetch = async (endpoint, options = {}) => {
+  const token = localStorage.getItem("token");
 
-export const mockError = (message) =>
-  new Promise((_, reject) => setTimeout(() => reject(new Error(message)), 400));
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  if (token) {
+    headers.Authorization = `Token ${token}`;
+  }
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers,
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      data?.detail ||
+      data?.message ||
+      "Something went wrong"
+    );
+  }
+
+  return data;
+};
+
+// Temporary mock helper.
+// We will remove this after converting the remaining services.
+export const mock = (value, delay = 300) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value), delay);
+  });
+};

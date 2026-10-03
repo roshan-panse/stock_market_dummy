@@ -90,7 +90,12 @@ export default function StockDetails() {
             <button className={side === "sell" ? "tab active" : "tab"} onClick={() => setSide("sell")}>Sell</button>
           </div>
           <h2>{side === "buy" ? "Buy" : "Sell"} {s.symbol}</h2>
-          {portfolio.loading ? <Loading /> : side === "buy" ? <BuyForm key="b" stock={s} cash={cash} /> : <SellForm key="s" stock={s} owned={owned} />}
+          {portfolio.loading ? <Loading /> : side === "buy" ? <BuyForm
+            key="b"
+            stock={s}
+            cash={cash}
+            onSuccess={portfolio.reload}
+          /> : <SellForm key="s" stock={s} owned={owned} />}
           <p className="muted small">The server checks every order. This screen only shows an estimate.</p>
         </section>
       </div>

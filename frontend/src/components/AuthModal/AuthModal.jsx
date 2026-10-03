@@ -62,9 +62,15 @@ export default function AuthModal() {
             </label>
           )}
           <label>
-            {isLogin ? "Email or username" : "Email"}
-            <input required type={isLogin ? "text" : "email"} value={form.email} onChange={set("email")} />
-          </label>
+  {isLogin ? "Username" : "Email"}
+  <input
+    required
+    type={isLogin ? "text" : "email"}
+    value={isLogin ? form.username : form.email}
+    onChange={set(isLogin ? "username" : "email")}
+    autoComplete={isLogin ? "username" : "email"}
+  />
+</label>
           <label>
             Password
             <input required type="password" value={form.password} onChange={set("password")} />

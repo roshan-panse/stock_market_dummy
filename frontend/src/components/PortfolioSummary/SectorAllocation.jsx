@@ -2,7 +2,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import "./SectorAllocation.css";
 import { money } from "../../utils/format.js";
 
-export const COLORS = ["#d9a7d3", "#a97aa3", "#8f6fb0", "#6ea8ff", "#3ddc97"];
+export const COLORS = ["#e13e10", "#ee0dd0", "#240ee8", "#32f518fa", "#22e18e"];
 
 export default function SectorAllocation({ data }) {
   const total = data.reduce((a, d) => a + d.value, 0);
