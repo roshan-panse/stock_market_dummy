@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+
 import "./Stocks.css";
 import useAsync from "../../hooks/useAsync.js";
 import { stockApi } from "../../services/stockApi.js";
@@ -6,20 +7,36 @@ import { watchlistApi } from "../../services/watchlistApi.js";
 import StockTable from "../../components/StockTable/StockTable.jsx";
 import { Loading, Empty, ErrorState } from "../../components/common/State.jsx";
 
+
 export default function Stocks() {
+
+
+ 
+
   const { data, loading, error, reload } = useAsync(() => stockApi.getStocks(), []);
+
+
   const [query, setQuery] = useState("");
   const [sector, setSector] = useState("All");
   const [sort, setSort] = useState("symbol");
   const [watch, setWatch] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
     watchlistApi.getWatchlist().then(setWatch);
   }, []);
+  const toggleWatch = async (symbol) => {
+    const item = watch.find((entry) => entry.symbol === symbol);
 
-  const toggleWatch = (symbol) =>
-    (watch.includes(symbol) ? watchlistApi.removeFromWatchlist(symbol) : watchlistApi.addToWatchlist(symbol)).then(setWatch);
+    if (item) {
+      await watchlistApi.removeFromWatchlist(item.id);
+    } else {
+      await watchlistApi.addToWatchlist(symbol);
+    }
 
+    const updated = await watchlistApi.getWatchlist();
+    setWatch(updated);
+  };
   const sectors = useMemo(() => ["All", ...new Set((data || []).map((s) => s.sector))], [data]);
 
   const rows = useMemo(() => {
@@ -41,7 +58,16 @@ export default function Stocks() {
 
   return (
     <div className="stack">
-      <h1 className="page-title">Stocks</h1>
+      <div className="stocks-title">
+        <h1 className="page-title">Stocks</h1>
+
+      
+      </div>
+      {lastUpdated && (
+        <p className="muted small">
+          Last updated: {lastUpdated.toLocaleTimeString()}
+        </p>
+      )}
       <div className="toolbar">
         <input className="search" placeholder="Search by symbol or company" value={query} onChange={(e) => setQuery(e.target.value)} />
         <select value={sector} onChange={(e) => setSector(e.target.value)} aria-label="Sector">
@@ -55,7 +81,7 @@ export default function Stocks() {
         </select>
       </div>
 
-      {loading && <Loading text="Loading stocks..." />}
+      {loading && !data && <Loading text="Loading stocks..." />}
       {error && <ErrorState text="Unable to load stocks. Please try again." onRetry={reload} />}
       {data && (rows.length ? (
         <StockTable stocks={rows} watchlist={watch} onToggleWatch={toggleWatch} />

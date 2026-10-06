@@ -1,8 +1,9 @@
 from datetime import timedelta
-
+from stocks.market import is_market_open
 from django.utils import timezone
 from rest_framework import generics
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Stock, PriceHistory
 from .serializers import StockSerializer, PriceHistorySerializer
 
@@ -41,3 +42,11 @@ class PriceHistoryView(generics.ListAPIView):
         return queryset.filter(
             recorded_at__gte=start_date
         ).order_by('recorded_at')
+
+
+
+class MarketStatusView(APIView):
+    def get(self, request):
+        return Response({
+            "isOpen": is_market_open()
+        })

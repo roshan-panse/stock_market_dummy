@@ -95,7 +95,12 @@ export default function StockDetails() {
             stock={s}
             cash={cash}
             onSuccess={portfolio.reload}
-          /> : <SellForm key="s" stock={s} owned={owned} />}
+          /> : <SellForm
+            key="s"
+            stock={s}
+            owned={owned}
+            onSuccess={portfolio.reload}
+          />}
           <p className="muted small">The server checks every order. This screen only shows an estimate.</p>
         </section>
       </div>

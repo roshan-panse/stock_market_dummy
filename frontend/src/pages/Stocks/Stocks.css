@@ -1,1 +1,24 @@
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; } .search { flex: 1; min-width: 220px; }
+
+.stocks-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.market-status {
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.market-status.closed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.market-status.open {
+  background: #dcfce7;
+  color: #166534;
+}

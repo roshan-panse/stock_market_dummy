@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+import MarketStatus from "../MarketStatus/MarketStatus.jsx";
 
 export default function Navbar() {
   const { user, signOut, openAuth } = useAuth();
@@ -41,6 +42,7 @@ export default function Navbar() {
         )}
 
         <div className="nav-right">
+          <MarketStatus />
           {user ? (
             <div className="profile" ref={ref}>
               <button

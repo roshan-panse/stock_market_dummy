@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/portfolio/', include('portfolio.urls')),
     path('api/trading/', include('trading.urls')),
+    path("api/watchlist/", include("watchlist.urls")),
 ]

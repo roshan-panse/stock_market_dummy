@@ -27,7 +27,7 @@ export default function StockTable({ stocks, watchlist, onToggleWatch }) {
               {onToggleWatch && (
                 <td onClick={(e) => e.stopPropagation()}>
                   <button className="btn btn-ghost btn-sm" onClick={() => onToggleWatch(s.symbol)}>
-                    {watchlist.includes(s.symbol) ? "Remove" : "Watch"}
+                   {watchlist.some((item) => item.symbol === s.symbol) ? "Remove" : "Watch"}
                   </button>
                 </td>
               )}

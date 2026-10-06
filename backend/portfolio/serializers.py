@@ -5,6 +5,7 @@ from .models import Holding
 class HoldingSerializer(serializers.ModelSerializer):
     symbol = serializers.CharField(source="stock.symbol")
     companyName = serializers.CharField(source="stock.company_name")
+    sector = serializers.CharField(source="stock.sector")
     currentPrice = serializers.DecimalField(
         source="stock.current_price",
         max_digits=15,
@@ -21,6 +22,7 @@ class HoldingSerializer(serializers.ModelSerializer):
             "id",
             "symbol",
             "companyName",
+            "sector",
             "quantity",
             "average_buy_price",
             "currentPrice",

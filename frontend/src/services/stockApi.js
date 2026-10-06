@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
+import { apiFetch } from "./api.js";
 
 export const stockApi = {
   getStocks: async () => {
@@ -39,5 +40,12 @@ export const stockApi = {
   }
 
   return response.json();
+},
+
+
+
+
+ getMarketStatus: () => {
+  return apiFetch("/stocks/market-status/");
 },
 };

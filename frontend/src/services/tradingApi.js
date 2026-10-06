@@ -11,8 +11,14 @@ export const tradingApi = {
     });
   },
 
-  // Sell will be connected later.
-  sellStock: async () => {
-    throw new Error("Sell is not available yet.");
-  },
+
+  sellStock: (symbol, quantity) => {
+  return apiFetch("/trading/sell/", {
+    method: "POST",
+    body: JSON.stringify({
+      symbol,
+      quantity,
+    }),
+  });
+},
 };

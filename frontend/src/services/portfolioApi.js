@@ -6,7 +6,7 @@ export const portfolioApi = {
   },
 
   getTransactions: async () => {
-    return [];
+    return apiFetch("/trading/transactions/");
   },
 
   getPerformance: async () => {

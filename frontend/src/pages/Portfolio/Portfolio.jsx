@@ -11,16 +11,31 @@ import { money, signedMoney, pct, tone } from "../../utils/format.js";
 // Sector order follows `allocation` so colours match the donut chart.
 function bySector(holdings, allocation) {
   const map = {};
+
   holdings.forEach((h) => {
-    const s = (map[h.sector] ??= { sector: h.sector, invested: 0, value: 0, stocks: [] });
-    s.invested += h.invested;
-    s.value += h.currentValue;
+    const s = (map[h.sector] ??= {
+      sector: h.sector,
+      invested: 0,
+      value: 0,
+      stocks: [],
+    });
+
+    s.invested += Number(h.investedAmount);
+    s.value += Number(h.currentValue);
     s.stocks.push(h.symbol);
   });
+
   return allocation
     .map((a) => map[a.sector])
     .filter(Boolean)
-    .map((s) => ({ ...s, profitLoss: s.value - s.invested, plPercent: ((s.value - s.invested) / s.invested) * 100 }));
+    .map((s) => ({
+      ...s,
+      profitLoss: s.value - s.invested,
+      plPercent:
+        s.invested > 0
+          ? ((s.value - s.invested) / s.invested) * 100
+          : 0,
+    }));
 }
 
 function Stat({ label, children, sub }) {

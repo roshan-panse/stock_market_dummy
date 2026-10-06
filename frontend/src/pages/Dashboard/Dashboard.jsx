@@ -24,10 +24,20 @@ export default function Dashboard() {
   const [typeFilter, setTypeFilter] = useState("ALL");
 
   useEffect(() => {
-    watchlistApi.getWatchlist().then(setWatch);
+    watchlistApi.getWatchlist().then((data) => {
+      setWatch(data);
+    });
   }, []);
+  const remove = async (symbol) => {
+  const item = watch?.find((entry) => entry.symbol === symbol);
 
-  const remove = (symbol) => watchlistApi.removeFromWatchlist(symbol).then(setWatch);
+  if (!item) return;
+
+  await watchlistApi.removeFromWatchlist(item.id);
+
+  const updated = await watchlistApi.getWatchlist();
+  setWatch(updated);
+};
   const summary = portfolio.data?.summary;
 
   return (
@@ -60,7 +70,11 @@ export default function Dashboard() {
             </section>
           </div>
 
-          <WatchlistCard symbols={watch} stocks={stocks.data} onRemove={remove} />
+          <WatchlistCard
+            symbols={watch?.map((item) => item.symbol)}
+            stocks={stocks.data}
+            onRemove={remove}
+          />
           <HoldingCards holdings={portfolio.data.holdings} />
         </div>
       )}

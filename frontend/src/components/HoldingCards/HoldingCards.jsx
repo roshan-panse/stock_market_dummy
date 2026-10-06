@@ -25,7 +25,7 @@ export default function HoldingCards({ holdings }) {
       ) : (
         <div className="hc-grid">
           {shown.map((h) => {
-            const plPct = (h.profitLoss / h.invested) * 100;
+            const plPct = (h.profitLoss / h.investedAmount) * 100;
             return (
               <button key={h.symbol} className="hc-card" onClick={() => navigate(`/stocks/${h.symbol}`)}>
                 <strong className="num hc-value">{money(h.currentValue)}</strong>
