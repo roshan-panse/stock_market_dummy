@@ -31,12 +31,27 @@ export const stockApi = {
   },
 
   getPriceHistory: async (symbol, range) => {
+    const response = await fetch(
+      `${API_URL}/stocks/${symbol}/chart/?range=${range}`
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || "Failed to fetch chart data");
+    }
+
+    return response.json();
+  },
+
+
+
+getIntradayChart: async (symbol) => {
   const response = await fetch(
-    `${API_URL}/stocks/${symbol}/price-history/?range=${range}`
+    `${API_URL}/stocks/${symbol}/intraday/`
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch price history");
+    throw new Error("Failed to fetch intraday chart");
   }
 
   return response.json();
@@ -45,7 +60,7 @@ export const stockApi = {
 
 
 
- getMarketStatus: () => {
-  return apiFetch("/stocks/market-status/");
-},
+  getMarketStatus: () => {
+    return apiFetch("/stocks/market-status/");
+  },
 };

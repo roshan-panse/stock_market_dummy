@@ -50,3 +50,20 @@ class PriceHistory(models.Model):
 
     def __str__(self):
         return f"{self.stock.symbol} - {self.price}"
+
+
+
+class ChartPrice(models.Model):
+    stock = models.ForeignKey(
+        Stock,
+        on_delete=models.CASCADE,
+        related_name="chart_prices"
+    )
+    date = models.DateField()
+    price = models.DecimalField(
+        max_digits=15,
+        decimal_places=2
+    )
+
+    class Meta:
+        ordering = ["date"]

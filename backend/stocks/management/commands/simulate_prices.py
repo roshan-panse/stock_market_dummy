@@ -63,7 +63,7 @@ class Command(BaseCommand):
                     )
                 )
 
-            time.sleep(60)
+            time.sleep(10 if is_market_open() else 60)
 
      except KeyboardInterrupt:
         self.stdout.write(

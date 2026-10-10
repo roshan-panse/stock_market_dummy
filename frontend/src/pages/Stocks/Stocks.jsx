@@ -11,7 +11,7 @@ import { Loading, Empty, ErrorState } from "../../components/common/State.jsx";
 export default function Stocks() {
 
 
- 
+
 
   const { data, loading, error, reload } = useAsync(() => stockApi.getStocks(), []);
 
@@ -21,10 +21,34 @@ export default function Stocks() {
   const [sort, setSort] = useState("symbol");
   const [watch, setWatch] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [marketOpen, setMarketOpen] = useState(false);
 
   useEffect(() => {
     watchlistApi.getWatchlist().then(setWatch);
   }, []);
+  useEffect(() => {
+    let interval;
+
+    const checkMarketAndPoll = async () => {
+      try {
+        const status = await stockApi.getMarketStatus();
+        setMarketOpen(status.isOpen);
+
+        if (status.isOpen) {
+          await reload();
+          setLastUpdated(new Date());
+        }
+      } catch (error) {
+        console.error("Market status check failed:", error);
+      }
+    };
+
+    checkMarketAndPoll();
+
+    interval = setInterval(checkMarketAndPoll, 10000);
+
+    return () => clearInterval(interval);
+  }, [reload]);
   const toggleWatch = async (symbol) => {
     const item = watch.find((entry) => entry.symbol === symbol);
 
@@ -61,7 +85,7 @@ export default function Stocks() {
       <div className="stocks-title">
         <h1 className="page-title">Stocks</h1>
 
-      
+
       </div>
       {lastUpdated && (
         <p className="muted small">

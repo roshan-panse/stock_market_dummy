@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./StockDetails.css";
 import { useParams, Link } from "react-router-dom";
 import useAsync from "../../hooks/useAsync.js";
@@ -10,7 +10,7 @@ import SellForm from "../../components/SellForm/SellForm.jsx";
 import { Loading, ErrorState } from "../../components/common/State.jsx";
 import { money, signedMoney, pct, tone } from "../../utils/format.js";
 
-const RANGES = ["1D", "1W", "1M", "6M", "1Y"];
+const RANGES = ["1D", "1W", "1M", "6M"];
 
 function StockHeader({ stock }) {
   return (
@@ -40,19 +40,61 @@ function StockStats({ stock }) {
   );
 }
 
+
 function ChartSection({ stock }) {
   const [range, setRange] = useState("1M");
-  const hist = useAsync(() => stockApi.getPriceHistory(stock.symbol, range), [stock.symbol, range]);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Refresh intraday data every 10 seconds while 1D is selected.
+  useEffect(() => {
+    if (range !== "1D") return;
+
+    const interval = setInterval(() => {
+      setRefreshKey((key) => key + 1);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [range, stock.symbol]);
+
+  const hist = useAsync(
+    () =>
+      range === "1D"
+        ? stockApi.getIntradayChart(stock.symbol)
+        : stockApi.getPriceHistory(stock.symbol, range),
+    [stock.symbol, range, refreshKey]
+  );
+
   return (
     <section className="card">
       <div className="tabs">
         {RANGES.map((r) => (
-          <button key={r} className={r === range ? "tab active" : "tab"} onClick={() => setRange(r)}>{r}</button>
+          <button
+            key={r}
+            className={r === range ? "tab active" : "tab"}
+            onClick={() => setRange(r)}
+          >
+            {r}
+          </button>
         ))}
       </div>
-      {hist.loading && <Loading text="Loading chart..." />}
-      {hist.error && <ErrorState text="Unable to load the chart." onRetry={hist.reload} />}
-      {hist.data && <PriceChart data={hist.data} positive={stock.change >= 0} />}
+
+      {hist.loading && !hist.data && (
+        <Loading text="Loading chart..." />
+      )}
+
+      {hist.error && (
+        <ErrorState
+          text="Unable to load the chart."
+          onRetry={hist.reload}
+        />
+      )}
+
+      {hist.data && (
+        <PriceChart
+          data={hist.data}
+          positive={stock.change >= 0}
+        />
+      )}
     </section>
   );
 }
