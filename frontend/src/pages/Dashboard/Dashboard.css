@@ -34,6 +34,18 @@
 .pill.filled { background: var(--mauve); color: #2a1428; font-weight: 500; padding: 8px 20px; }
 .pill.filled:hover { background: #e6bce1; color: #2a1428; }
 
+.dash-market-row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+@media (max-width: 700px) {
+  .dash-market-row {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 1000px) {
   .dash-top { grid-template-columns: 1fr 1fr; }
   .dash-left { grid-column: 1 / -1; flex-direction: row; }

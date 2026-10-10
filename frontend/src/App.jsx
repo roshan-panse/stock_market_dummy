@@ -6,6 +6,7 @@ import Landing from "./pages/Landing/Landing.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Portfolio from "./pages/Portfolio/Portfolio.jsx";
 import Stocks from "./pages/Stocks/Stocks.jsx";
+import Transactions from "./pages/Transactions/Transactions.jsx";
 import StockDetails from "./pages/StockDetails/StockDetails.jsx";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/stocks" element={<Stocks />} />
             <Route path="/stocks/:symbol" element={<StockDetails />} />
+            <Route path="/transactions" element={<Transactions />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,5 +1,10 @@
 from decimal import Decimal
+from datetime import timedelta
 
+from django.utils import timezone
+from rest_framework.views import APIView
+
+from .models import PortfolioSnapshot
 from django.db.models import Sum
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -77,3 +82,76 @@ class PortfolioView(generics.GenericAPIView):
             "holdings": holding_data,
             "allocation": allocation,
         })
+
+
+
+class PortfolioPerformanceView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        range_value = request.query_params.get("range", "1Y")
+
+        days_by_range = {
+            "1D": 1,
+            "1W": 7,
+            "1M": 30,
+            "6M": 180,
+            "1Y": 365,
+        }
+
+        if range_value not in days_by_range:
+            return Response(
+                {"detail": "Invalid range."},
+                status=400,
+            )
+
+        now = timezone.now()
+        cutoff = now - timedelta(
+            days=days_by_range[range_value]
+        )
+
+        holdings = Holding.objects.filter(
+            user=request.user
+        ).select_related("stock")
+
+        invested_value = sum(
+            (
+                holding.quantity
+                * holding.stock.current_price
+                for holding in holdings
+            ),
+            Decimal("0"),
+        )
+
+        cash = request.user.account.cash_balance
+        current_total = cash + invested_value
+
+        # Save a snapshot at most once every 5 minutes per user.
+        latest = PortfolioSnapshot.objects.filter(
+            user=request.user
+        ).order_by("-recorded_at").first()
+
+        if (
+            latest is None
+            or now - latest.recorded_at >= timedelta(minutes=5)
+        ):
+            PortfolioSnapshot.objects.create(
+                user=request.user,
+                total_value=current_total,
+                recorded_at=now,
+            )
+
+        snapshots = PortfolioSnapshot.objects.filter(
+            user=request.user,
+            recorded_at__gte=cutoff,
+        ).order_by("recorded_at")
+
+        return Response([
+            {
+                "label": snapshot.recorded_at.astimezone(
+                    timezone.get_current_timezone()
+                ).strftime("%b %d"),
+                "value": float(snapshot.total_value),
+            }
+            for snapshot in snapshots
+        ])

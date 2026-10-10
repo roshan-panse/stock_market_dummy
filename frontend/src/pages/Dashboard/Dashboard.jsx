@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from "react";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import MarketMovers from "../../components/MarketMovers/MarketMovers.jsx";
 import useAsync from "../../hooks/useAsync.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { portfolioApi } from "../../services/portfolioApi.js";
@@ -17,9 +19,11 @@ import { money, signedMoney, pct, tone } from "../../utils/format.js";
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
+
   const portfolio = useAsync(() => portfolioApi.getPortfolio(), []);
   const stocks = useAsync(() => stockApi.getStocks(), []);
   const txns = useAsync(() => portfolioApi.getTransactions(), []);
+
   const [watch, setWatch] = useState(null);
   const [typeFilter, setTypeFilter] = useState("ALL");
 
@@ -28,45 +32,73 @@ export default function Dashboard() {
       setWatch(data);
     });
   }, []);
+
   const remove = async (symbol) => {
-  const item = watch?.find((entry) => entry.symbol === symbol);
+    const item = watch?.find((entry) => entry.symbol === symbol);
 
-  if (!item) return;
+    if (!item) return;
 
-  await watchlistApi.removeFromWatchlist(item.id);
+    await watchlistApi.removeFromWatchlist(item.id);
 
-  const updated = await watchlistApi.getWatchlist();
-  setWatch(updated);
-};
+    const updated = await watchlistApi.getWatchlist();
+    setWatch(updated);
+  };
+
   const summary = portfolio.data?.summary;
+
+  // Filter transactions, sort newest first, and keep only five.
+  const recentTransactions = (txns.data ?? [])
+    .filter((t) => typeFilter === "ALL" || t.type === typeFilter)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
 
   return (
     <div className="dash">
       <header>
-        <h1 className="dash-title">Welcome, <span>{user?.username}</span></h1>
-        <p className="muted small">Here's your investment portfolio overview</p>
+        <h1 className="dash-title">
+          Welcome, <span>{user?.username}</span>
+        </h1>
+        <p className="muted small">
+          Here's your investment portfolio overview
+        </p>
       </header>
 
       {portfolio.loading && <Loading text="Loading portfolio..." />}
-      {portfolio.error && <ErrorState text="Unable to load your portfolio. Please try again." onRetry={portfolio.reload} />}
+
+      {portfolio.error && (
+        <ErrorState
+          text="Unable to load your portfolio. Please try again."
+          onRetry={portfolio.reload}
+        />
+      )}
 
       {portfolio.data && (
         <div className="dash-top">
           <div className="dash-left">
             <section className="dash-card">
               <span className="muted">Total Holding</span>
-              <span className="dash-big num">{money(summary.totalValue)}</span>
+              <span className="dash-big num">
+                {money(summary.totalValue)}
+              </span>
               <span className={`num small ${tone(summary.profitLoss)}`}>
-                {signedMoney(summary.profitLoss)} ({pct(summary.profitLossPercent)})
+                {signedMoney(summary.profitLoss)} (
+                {pct(summary.profitLossPercent)})
               </span>
             </section>
 
             <section className="dash-card dash-glow">
               <h2>Ready for your next trade?</h2>
               <p className="muted small">
-                You have <strong className="num">{money(summary.cash)}</strong> available to invest.
+                You have{" "}
+                <strong className="num">{money(summary.cash)}</strong>{" "}
+                available to invest.
               </p>
-              <button className="pill filled" onClick={() => navigate("/stocks")}>Explore stocks</button>
+              <button
+                className="pill filled"
+                onClick={() => navigate("/stocks")}
+              >
+                Explore stocks
+              </button>
             </section>
           </div>
 
@@ -75,28 +107,61 @@ export default function Dashboard() {
             stocks={stocks.data}
             onRemove={remove}
           />
+
           <HoldingCards holdings={portfolio.data.holdings} />
         </div>
       )}
 
-      <PerformanceChart />
+      <div className="dash-market-row">
+        <MarketMovers
+          stocks={stocks.data}
+          loading={stocks.loading}
+          error={stocks.error}
+        />
+        <PerformanceChart />
+      </div>
 
       <div className="dash-bottom">
         <section className="dash-card">
           <div className="section-head">
             <h2>Recent transactions</h2>
-            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} aria-label="Filter by type">
-              <option value="ALL">All</option>
-              <option value="BUY">Buy</option>
-              <option value="SELL">Sell</option>
-            </select>
+
+            <div className="pills">
+              <button
+                type="button"
+                className="pill outline"
+                onClick={() => navigate("/transactions")}
+              >
+                View All
+              </button>
+
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                aria-label="Filter by type"
+              >
+                <option value="ALL">All</option>
+                <option value="BUY">Buy</option>
+                <option value="SELL">Sell</option>
+              </select>
+            </div>
           </div>
+
           {txns.loading && <Loading text="Loading transactions..." />}
-          {txns.error && <ErrorState text="Unable to load transactions. Please try again." onRetry={txns.reload} />}
-          {txns.data && (() => {
-            const rows = txns.data.filter((t) => typeFilter === "ALL" || t.type === typeFilter);
-            return rows.length ? <TransactionTable transactions={rows} /> : <Empty text="No transactions match this filter." />;
-          })()}
+
+          {txns.error && (
+            <ErrorState
+              text="Unable to load transactions. Please try again."
+              onRetry={txns.reload}
+            />
+          )}
+
+          {txns.data &&
+            (recentTransactions.length > 0 ? (
+              <TransactionTable transactions={recentTransactions} />
+            ) : (
+              <Empty text="No transactions match this filter." />
+            ))}
         </section>
 
         {portfolio.data && (

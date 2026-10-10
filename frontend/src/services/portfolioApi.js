@@ -9,7 +9,11 @@ export const portfolioApi = {
     return apiFetch("/trading/transactions/");
   },
 
-  getPerformance: async () => {
-    return [];
-  },
+  
+getPerformance: async (range = "1Y") => {
+  return apiFetch(
+    `/portfolio/performance/?range=${range}`
+  );
+},
+
 };
