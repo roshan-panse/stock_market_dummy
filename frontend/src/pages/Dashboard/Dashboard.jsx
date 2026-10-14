@@ -151,7 +151,7 @@ export default function Dashboard() {
 
           {txns.error && (
             <ErrorState
-              text="Unable to load transactions. Please try again."
+              text="You dont have any transactions yet. Please try again."
               onRetry={txns.reload}
             />
           )}

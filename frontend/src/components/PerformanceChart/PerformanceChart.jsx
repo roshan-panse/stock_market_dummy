@@ -42,7 +42,7 @@ export default function PerformanceChart() {
       </div>
 
       {perf.error ? (
-        <ErrorState text="Unable to load performance." onRetry={perf.reload} />
+        <ErrorState text="You dont have any performance data available." onRetry={perf.reload} />
       ) : (
         <div className="perf-box">
           {data && (
