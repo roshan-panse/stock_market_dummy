@@ -68,17 +68,40 @@ export default function Portfolio() {
 
       {data && (
         <>
+
           <div className="pf-stats">
-            <Stat label="Total portfolio value">{money(data.summary.totalValue)}</Stat>
-            <Stat label="Money invested">{money(data.summary.invested)}</Stat>
-            <Stat label="Current holdings value">{money(holdingsValue)}</Stat>
+            <Stat label="Total portfolio value">
+              {money(data.summary.totalValue)}
+            </Stat>
+
+            <Stat label="Available cash">
+              {money(data.summary.cash)}
+            </Stat>
+
+            <Stat label="Money invested">
+              {money(data.summary.invested)}
+            </Stat>
+
+            <Stat label="Current holdings value">
+              {money(holdingsValue)}
+            </Stat>
+
             <Stat
               label="Profit / loss"
-              sub={<span className={`small num ${tone(data.summary.profitLoss)}`}>{pct(data.summary.profitLossPercent)}</span>}
+              sub={
+                <span
+                  className={`small num ${tone(data.summary.profitLoss)}`}
+                >
+                  {pct(data.summary.profitLossPercent)}
+                </span>
+              }
             >
-              <span className={tone(data.summary.profitLoss)}>{signedMoney(data.summary.profitLoss)}</span>
+              <span className={tone(data.summary.profitLoss)}>
+                {signedMoney(data.summary.profitLoss)}
+              </span>
             </Stat>
           </div>
+
 
           <PerformanceChart />
 

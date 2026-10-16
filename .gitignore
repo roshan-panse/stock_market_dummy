@@ -10,3 +10,20 @@ dist/
 *.log
 *.env
 
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Python virtual environments
+venv/
+.venv/
+
+# Django local database
+db.sqlite3
+
+# Environment files
+.env
+.env.*
+!.env.example
+

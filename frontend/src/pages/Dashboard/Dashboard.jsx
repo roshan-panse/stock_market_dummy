@@ -76,7 +76,7 @@ export default function Dashboard() {
         <div className="dash-top">
           <div className="dash-left">
             <section className="dash-card">
-              <span className="muted">Total Holding</span>
+              <span className="muted">Total portfolio value</span>
               <span className="dash-big num">
                 {money(summary.totalValue)}
               </span>
